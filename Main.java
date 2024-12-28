@@ -9,10 +9,12 @@ class Main {
     public static void main(String[] args) {
         
         Main interpreter = new Main();
-     
+       System.out.println(handleObj.HandleVar("125"));
         // Example program: For loop
-        String program = " n := 10\n" + 
+        String program = " n := 10 +- 10\n" + 
                         " sum := 0\n" + 
+                        " boole := true\n" + 
+                        " theString := \"Hello!\"\n" + 
                         " for i := 1; i <= n; i++ {\n" + 
                         "     sum += i\n" + 
                         " }\n" + 
@@ -50,23 +52,12 @@ class Main {
         String varName = parts[0].trim();
         String expression = parts[1].trim();
 
-        // Evaluate the expression (addition, subtraction, multiplication)
-        Object value = evaluateExpression(expression);
+        // Evaluate the expression, if there's one (addition, subtraction, multiplication) 
+        Object value = handleObj.HandleVar(expression);
+        System.out.println("Value of " + varName + " is " + value);
         if (expression != null) {
            variables.put(varName, value);   
         }
-    }
-
-    // Method to evaluate expressions (addition, subtraction, multiplication)
-    private Object evaluateExpression(String expression) {
-        if (!(expression.contains("+")) || !(expression.contains("-")) || !(expression.contains("*")) || !(expression.contains("/")) || !(expression.contains("%")) ){
-            System.out.println("Read variable");
-            // Here will be syntax check
-            return expression;
-        } else {
-            
-        }
-        return null;
     }
 
     // Handle print statements like "PRINT(sum)"
