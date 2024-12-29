@@ -90,6 +90,7 @@ public class Handler {
                 return "Syntax Error";
             }
             // Calculation
+            return calculate(expression);
         } else {
             String Type = new ExpressionTypeDetector().detectType(expression);
             Object result = null;
@@ -111,79 +112,193 @@ public class Handler {
             }
             return result;
         }
-        return null;
     }
 
     private Object calculate(String expression) {
         Object result = null;
         String operator = "";
-        Long num1 = null;
-        Long num2 = null;
+        Float num1 = null;
+        Float num2 = null;
         boolean isAdding = false;
+        boolean waitingForOperator = false;
         int index = 0;
         for (char c : expression.toCharArray()) {
+            if (result != null) {
+                return null;
+            }
             if (c == ' ') {
-                if (index == -1){
+                if (index == -1) {
                     operator += c;
+                } else if ("".equals(operator)) {
+                    waitingForOperator = true;
                 }
                 continue;
+            }
+            if (waitingForOperator) {
+                if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
+                    if (index == -1) {
+                        operator += c;
+                        continue;
+                    } else {
+                        System.out.println(num1);
+                        if (num1 != null) {
+                            if (num2 != null) {
+                                switch (c) {
+                                    case '+':
+                                        result = num1 + num2;
+                                        break;
+                                    case '-':
+                                        result = num1 - num2;
+                                        break;
+                                    case '*':
+                                        result = num1 * num2;
+                                        break;
+                                    case '/':
+                                        result = num1 / num2;
+                                        break;
+                                    case '%':
+                                        result = num1 % num2;
+                                        break;
+                                }
+                                num2 = 0F;
+                            }
+                            operator = String.valueOf(c);
+                            waitingForOperator = false;
+                            isAdding = true;
+                            index = 0;
+                            continue;
+                        } else {
+                            if (!"".equals(operator) || !"+".equals(operator) || !"-".equals(operator)
+                                    || !"*".equals(operator)
+                                    || !"/".equals(operator) || !"%".equals(operator)) {
+                                operator = String.valueOf(c);
+                                waitingForOperator = false;
+                                index = 0;
+                                continue;
+                            } else {
+                                return null;
+                            }
+                        }
+                    }
+                } else {
+                    return null;
+                }
             }
             if (c == '"' || c == '\'') {
                 // String
                 if (index == 0) {
                     if ((isAdding && operator != "") || operator == "") {
-                        index = -1; 
+                        index = -1;
                         continue;
                     } else {
-
-                    }                    
+                        return null;
+                    }
                 } else {
                     if (index == -1) {
-                        if (operator.charAt(0) == c){
-                            operator+=c;
-                        } else{
+                        if (operator.charAt(0) == c) {
+                            operator += c;
+                        } else {
                             index = 0;
                         }
                     } else {
-
+                        return null;
                     }
-
                 }
-            } else if (Character.isDigit(c)) {
-                // Number
-                if (index == 0) {
-                    if (num1 == null) {
-                        num1 = Long.parseLong(String.valueOf(c));
+            } else {
+                if (index == -1) {
+                    operator += c;
+                    continue;
+                }
+                if (Character.isDigit(c)) {
+                    if (index == 0) {
+                        if (num1 == null) {
+                            num1 = Float.valueOf(String.valueOf(c));
+                            index++;
+                            continue;
+                        } else {
+                            if (isAdding) {
+                                num2 = Float.valueOf(String.valueOf(c));
+                                index++;
+                                continue;
+                            } else {
+
+                                return null;
+                            }
+                        }
+                    } else if (index > 0) {
+                        if (num2 == null) {
+                            num1 = num1 * 10 + Float.parseFloat(String.valueOf(c));
+                            index++;
+                            continue;
+                        } else {
+                            num2 = num2 * 10 + Float.parseFloat(String.valueOf(c));
+                            index++;
+                            continue;
+                        }
                     } else {
-                        
+                        return null;
+                    }
+                } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
+                    if (!"".equals(operator)) {
+                        if (operator.equals(String.valueOf(c)) && ("+".equals(operator) || "-".equals(operator))) {
+                            if ("+".equals(operator)) {
+                                num1++;
+                            } else {
+                                num1--;
+                            }
+                            result = num1;
+                            continue;
+                        } else {
+                            if (c == '+') {
+                                index = 0;
+                                isAdding = true;
+                                continue;
+                            } else {
+                                return null;
+                            }
+                        }
+                    } else {
+                        operator = String.valueOf(c);
+                        waitingForOperator = false;
+                        isAdding = true;
+                        index = 0;
+                        continue;
                     }
                 } else {
-    
+                    return null;
                 }
-            } 
-            switch (c) {
-            // Add
-                case '+':
-                    break;
-            // Subtract
-                case '-':
-                    break;
-            // Multiply
-                case '*':
-                    break;
-            // Divide
-                case '/':
-                    break;
-            // Modulus
-                case '%':
-                    break;
-                default:
-                    break;
             }
         }
-        return  result;
-    }
+        if (result != null) {
+            return result;
+        }
+        if (num1 != null){
+            if (num2 != null) {
+                if (!"+".equals(operator) && !"-".equals(operator) && !"*".equals(operator) && !"/".equals(operator)
+                        && !"%".equals(operator)) {
 
+                    return null;
+                }
+                switch (operator) {
+                    case "+" -> result = num1 + num2;
+                    case "-" -> result = num1 - num2;
+                    case "*" -> result = num1 * num2;
+                    case "/" -> result = num1 / num2;
+                    case "%" -> result = num1 % num2;
+                }
+            } else {
+                if (!"".equals(operator)) {
+                    return null;
+                }
+                result = num1;
+            }
+        } else {
+            if (!"".equals(operator)) {
+                result = operator;
+            }
+        }
+        return result;
+    }
     // Check if the arithmetic expression is valid
     private boolean isValidExpression(String expression) {
         // Regular expression to match valid arithmetic expressions

@@ -11,7 +11,7 @@ class Main {
         Main interpreter = new Main();
        System.out.println(handleObj.HandleVar("125"));
         // Example program: For loop
-        String program = " n := 10 +- 10\n" + 
+        String program = " n := 10 + 10\n" + 
                         " sum := 0\n" + 
                         " boole := true\n" + 
                         " theString := \"Hello!\"\n" + 
