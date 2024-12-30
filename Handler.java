@@ -294,6 +294,42 @@ public class Handler {
         }
         return result;
     }
+
+    public boolean HandleCondition(Object left, Object right, String operator) throws Exception {
+        if (left instanceof Integer && right instanceof Integer){
+            int l = (int) left;
+            int r = (int) right;
+            switch (operator){
+                case "==":
+                    return l == r;
+                case "!=":
+                    return l != r;
+                case ">":
+                    return l > r;
+                case "<":
+                    return l < r;
+                case ">=":
+                    return l >= r;
+                case "<=":
+                    return l <= r;
+                default:
+                    return false;
+            }
+        } else if (left instanceof String && right instanceof String){
+            String l = (String) left;
+            String r = (String) right;
+            switch (operator){
+                case "==":
+                    return l.equals(r);
+                case "!=":
+                    return !l.equals(r);
+                default:
+                    return false;
+            }
+        } else {
+            throw  new Exception("Invalid condition");
+        }
+    }
     // Check if the arithmetic expression is valid
     private boolean isValidExpression(String expression) {
         // Regular expression to match valid arithmetic expressions
