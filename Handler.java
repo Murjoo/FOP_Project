@@ -9,7 +9,7 @@ class ExpressionTypeDetector {
         } else if (isString(expression)) {
             return "String";
         } else {
-            return "Exception";
+            return "Variable";
         }
     }
 
@@ -43,37 +43,31 @@ class ExpressionTypeDetector {
 }
 
 public class Handler {
-    public String Arithmetic(String Num1, String Num2, String Action) { // Handling Arithmetic equations
-        try { // Checking corectness of numbers
-            Long.parseLong(Num1);
-            Long.parseLong(Num2);
-        } catch (Exception e) {
-            return "Exception";
-        }
-        String result = " ";
-        long n1 = Long.parseLong(Num1);
-        long n2 = Long.parseLong(Num2);
+    public Object Arithmetic(Object Num1, int Num2, String Action) { // Handling Arithmetic equations
+        Object result;
+        int n1 = (int) Num1;
+        int n2 = Num2;
         switch (Action) { // Different type of equations
             case "+":
-                result = String.valueOf(n1 + n2);
+                result = n1 + n2;
                 break;
             case "-":
-                result = String.valueOf(n1 - n2);
+                result = n1 - n2;
                 break;
             case "*":
-                result = String.valueOf(n1 * n2);
+                result = n1 * n2;
                 break;
             case "%":
-                result = String.valueOf(n1 % n2);
+                result = n1 % n2;
                 break;
             case "/":
                 if (n2 == 0) {
-                    return "Exception";
+                    return null;
                 }
-                result = String.valueOf(n1 / n2);
+                result = n1 / n2;
                 break;
             default:
-                result = "Error";
+                result = null;
         }
         return result;
     }
@@ -84,10 +78,8 @@ public class Handler {
         if (expression.contains("+") || expression.contains("-") || expression.contains("*") || expression.contains("/")
                 || expression.contains("%")) {
             // Process arithmetic expression
-            System.out.println("Expression detected, proceeding to syntax check...");
-
             if (!isValidExpression(expression)) {
-                return "Syntax Error";
+                return null;
             }
             // Calculation
             return calculate(expression);
@@ -106,6 +98,9 @@ public class Handler {
                     break;
                 case "String":
                     result = expression;
+                    break;
+                case "Variable":
+                    result = "x12o4j2145opp1p2_22mdmdmmda2144";
                     break;
                 default:
                     throw new AssertionError();
