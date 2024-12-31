@@ -1,3 +1,6 @@
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 class ExpressionTypeDetector {
     public String detectType(String expression) {
         if (isInteger(expression)) {
@@ -8,6 +11,9 @@ class ExpressionTypeDetector {
             return "Boolean";
         } else if (isString(expression)) {
             return "String";
+        } else if (expression.contains("+") || expression.contains("-") || expression.contains("*")
+                || expression.contains("/") || expression.contains("%")) {
+            return "Arithmetic";   
         } else {
             return "Variable";
         }
@@ -78,9 +84,44 @@ public class Handler {
         if (expression.contains("+") || expression.contains("-") || expression.contains("*") || expression.contains("/")
                 || expression.contains("%")) {
             // Process arithmetic expression
+            Pattern pattern = Pattern.compile("(\\w+)\\s*([+\\-*/%])\\s*(\\w+)");
+
+            // Create matcher object
+            Matcher matcher = pattern.matcher(expression);
+            String operand1, operator, operand2;
+            if (matcher.matches()) {
+                // Extract the parts: operand1, operator, operand2
+                 operand1 = matcher.group(1); // "i"
+                 operator = matcher.group(2); // "*"
+                 operand2 = matcher.group(3); // "n"
+
+            } else {
+                return null;
+            }
+            int value1;
+            String Value1Type = new ExpressionTypeDetector().detectType(operand1);
+           
+            if (Value1Type.equals("Variable")) {
+                value1 = (int) new Main().GetVariable(operand1);
+            } else if (Value1Type.equals("Integer")) {
+                value1 = Integer.parseInt(operand1);
+            } else {
+                return null;
+            }
+            int value2;
+            String Value2Type = new ExpressionTypeDetector().detectType(operand2);
+            if (Value2Type.equals("Variable")) {
+                value2 = (int) new Main().GetVariable(operand2);
+            } else if (Value2Type.equals("Integer")) {
+                value2 = Integer.parseInt(operand2);
+            } else {
+                return null;
+            }
+            expression = value1 + " " + operator + " " + value2;
             if (!isValidExpression(expression)) {
                 return null;
             }
+
             // Calculation
             return calculate(expression);
         } else {
@@ -100,7 +141,7 @@ public class Handler {
                     result = expression;
                     break;
                 case "Variable":
-                    result = "x12o4j2145opp1p2_22mdmdmmda2144";
+                    result = new Main().GetVariable(expression);
                     break;
                 default:
                     throw new AssertionError();
@@ -135,7 +176,6 @@ public class Handler {
                         operator += c;
                         continue;
                     } else {
-                        System.out.println(num1);
                         if (num1 != null) {
                             if (num2 != null) {
                                 switch (c) {
@@ -267,7 +307,7 @@ public class Handler {
         if (result != null) {
             return result;
         }
-        if (num1 != null){
+        if (num1 != null) {
             if (num2 != null) {
                 if (!"+".equals(operator) && !"-".equals(operator) && !"*".equals(operator) && !"/".equals(operator)
                         && !"%".equals(operator)) {
@@ -287,6 +327,7 @@ public class Handler {
                 }
                 result = num1;
             }
+            result = Math.round((float) result * 100) / 100;
         } else {
             if (!"".equals(operator)) {
                 result = operator;
@@ -296,10 +337,10 @@ public class Handler {
     }
 
     public boolean HandleCondition(Object left, Object right, String operator) throws Exception {
-        if (left instanceof Integer && right instanceof Integer){
+        if (left instanceof Integer && right instanceof Integer) {
             int l = (int) left;
             int r = (int) right;
-            switch (operator){
+            switch (operator) {
                 case "==":
                     return l == r;
                 case "!=":
@@ -315,10 +356,10 @@ public class Handler {
                 default:
                     return false;
             }
-        } else if (left instanceof String && right instanceof String){
+        } else if (left instanceof String && right instanceof String) {
             String l = (String) left;
             String r = (String) right;
-            switch (operator){
+            switch (operator) {
                 case "==":
                     return l.equals(r);
                 case "!=":
@@ -327,9 +368,10 @@ public class Handler {
                     return false;
             }
         } else {
-            throw  new Exception("Invalid condition");
+            throw new Exception("Invalid condition");
         }
     }
+
     // Check if the arithmetic expression is valid
     private boolean isValidExpression(String expression) {
         // Regular expression to match valid arithmetic expressions
