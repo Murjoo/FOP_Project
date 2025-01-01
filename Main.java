@@ -7,13 +7,14 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// Main class to interpret the code
 class Main {
 
     public static Map<String, Object> variables = new HashMap<>(); // Variable storage
-    List<String> blocks;
-    public static ArrayList<Integer> blockLines = new ArrayList<>();
-    int blockCounter = 0;
-    static Handler handleObj = new Handler();
+    List<String> blocks; // Block code storage
+    public static ArrayList<Integer> blockLines = new ArrayList<>(); // Block line storage
+    int blockCounter = 0; // Block counter
+    static Handler handleObj = new Handler(); // Handler object
 
     public static void main(String[] args) throws Exception {
 
@@ -40,16 +41,16 @@ class Main {
 
     // Method to evaluate the code
     public void eval(String code) throws Exception {
-        Stack<String> varStack = new Stack<>();
+        Stack<String> varStack = new Stack<>(); // Gets all the variables declared in nested code
         String[] lines = code.split("\n"); // Split by lines
         List<String> oldBlocks = blocks;
         ArrayList<Integer> oldblockLines = new ArrayList<>(blockLines);
         int oldBlockCounter = blockCounter;
-        blockCounter = 0;
+        blockCounter = 0; // Counts current nested blocks
         blockLines.clear();
         blocks = extractBlocks(code); // Extract blocks
         String ifCondition = "None";
-        int lineCounter = 0;
+        int lineCounter = 0; // Counts current line
         for (String line : lines) {
 
             lineCounter++;
@@ -57,7 +58,7 @@ class Main {
 
             if (line.isEmpty() || IsInBlock(line, lineCounter))
                 continue;
-
+            // If it's not a if or else, then the statement won't run
             if (!line.contains("if") && !line.contains("else")) {
                 ifCondition = "None";
             }
@@ -89,9 +90,11 @@ class Main {
                 InterpretPrint(line);
             }
         }
+        // Removes variables declared in the nested code
         for (String varName : varStack) {
             variables.remove(varName);
         }
+        // The next 5 lines of code are used to reset the variables and blocks to the previous state
         blockLines.clear();
         blockLines = oldblockLines;
         blocks = oldBlocks;
@@ -99,6 +102,7 @@ class Main {
         varStack.clear();
     }
 
+    // Check if the line is a simple assignment
     private boolean isSimpleAssignment(String line) {
         // Regular expression for simple assignments
         // Matches: <variable> = <expression>, excludes: +=, -=, *=, /=, etc.
@@ -108,6 +112,7 @@ class Main {
         return matcher.matches();
     }
 
+    // Check if the line is in a block
     private boolean IsInBlock(String line, int curLine) {
         line = line.replace('{', ' ').replace('}', ' ').trim();
         int bc = 0;
@@ -158,7 +163,7 @@ class Main {
         }
         return varName;
     }
-
+    // Handle arithmetic operations like "sum += 10" or "x++"
     private void InterpretArithmetic(String line) throws Exception {
         // Syntax check
         String[] parts;
@@ -229,6 +234,7 @@ class Main {
         varValue = handleObj.Arithmetic(varValue, newValue, Operator);
         variables.put(varName, varValue);
     }
+    // Handle `for` and `while` loops
     private void InterpretFor(String line) throws Exception {
         if (line.contains("for")) {
             // Handle `for` loop
@@ -276,7 +282,7 @@ class Main {
 
                 String varName = splitByEqual1[0].replace(":", "").trim();
 
-                // Step 3: Loop logic based on the comparison operator
+                // Loop logic based on the comparison operator
                 if (x.equals("<")) {
                     for (int i = S; i < y; i++) { // Increment i in the loop
                         InterpretAssignment(varName + "="+i, true);
@@ -367,7 +373,7 @@ class Main {
 
         }
     }
-
+    // Handle if statements like "if x < 5 {"
     private boolean InterpretIf(String line) throws Exception {
         // Syntax check
         if (!line.contains("{")) {
@@ -430,7 +436,7 @@ class Main {
             throw new IllegalArgumentException("Invalid condition: " + condition);
         }
     }
-
+    // Extract blocks from the code
     private static List<String> extractBlocks(String code) {
         List<String> blocks = new ArrayList<>();
         StringBuilder currentBlock = new StringBuilder();
@@ -474,7 +480,7 @@ class Main {
 
         return blocks;
     }
-
+   // Get the value of a variable
     public Object GetVariable(String varName) {
         return variables.get(varName);
     }

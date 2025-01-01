@@ -2,6 +2,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class ExpressionTypeDetector {
+    // Detect the type of the expression
     public String detectType(String expression) {
         if (isInteger(expression)) {
             return "Integer";
@@ -18,7 +19,7 @@ class ExpressionTypeDetector {
             return "Variable";
         }
     }
-
+    // Check if the expression is an integer
     private boolean isInteger(String expression) {
         try {
             Integer.parseInt(expression);
@@ -27,7 +28,7 @@ class ExpressionTypeDetector {
             return false;
         }
     }
-
+     // Check if the expression is a float
     private boolean isFloat(String expression) {
         try {
             Float.parseFloat(expression);
@@ -37,19 +38,21 @@ class ExpressionTypeDetector {
             return false;
         }
     }
-
+   // Check if the expression is a boolean
     private boolean isBoolean(String expression) {
         return expression.equalsIgnoreCase("true") || expression.equalsIgnoreCase("false");
     }
 
+    // Check if the expression is a string
     private boolean isString(String expression) {
         // Check if it starts and ends with double quotes
         return expression.startsWith("\"") && expression.endsWith("\"");
     }
 }
-
+// Handler class to handle arithmetic operations and variable declarations/assignments
 public class Handler {
-    public Object Arithmetic(Object Num1, int Num2, String Action) { // Handling Arithmetic equations
+    // Handling Arithmetic equations
+    public Object Arithmetic(Object Num1, int Num2, String Action) { 
         Object result;
         int n1 = (int) Num1;
         int n2 = Num2;
@@ -149,7 +152,7 @@ public class Handler {
             return result;
         }
     }
-
+    // Calculate the result of the arithmetic expression
     private Object calculate(String expression) {
         Object result = null;
         String operator = "";
@@ -335,7 +338,7 @@ public class Handler {
         }
         return result;
     }
-
+    // Handling conditions
     public boolean HandleCondition(Object left, Object right, String operator) throws Exception {
         if (left instanceof Integer && right instanceof Integer) {
             int l = (int) left;

@@ -1,14 +1,17 @@
 import java.util.Iterator;
 import java.util.LinkedList;
 public class Executor {
-    private static LinkedList<String> commands = new LinkedList<>();
+    private static LinkedList<String> commands = new LinkedList<>(); // List of commands to be executed
+
+    // Add command to the list of commands
     public void AddToExecute(String command, boolean nextLine) {
-        // Add command to the list of commands to be executed
         if (nextLine){
             command += "\n";
         }
         commands.push(command);
     }
+
+    // Execute the commands
     public void Execute() {
         if (commands.isEmpty()) {
             // No commands to execute

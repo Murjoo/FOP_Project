@@ -1,0 +1,164 @@
+Interpreter Instructions:
+
+Machine can't operate more than one command in a single line, for example: x := 2 + 5 (this will work), but x := 7 * 2 + 5 (this will be error)
+
+Keywords for and if must have opening bracket '{' on the same line as the statement
+
+Detects most of the syntax errors
+
+There is no && and || in conditions
+
+There is no input provider such as Scanner for java
+
+You can write as many nested codes as you want
+
+Example codes:
+
+a := 1
+a := 5 // Error already declared
+---------------------------------
+a := 6
+if a > 5 {
+    Print(b) // Error b not declared
+}
+--------------------------------
+a := 1
+b = 5 // Error b not declared
+---------------------------------
+a := 1
+b := "Hello world!"
+a += b // Error
+--------------------------------- 
+
+The 10 algorithms providen by lecturer in golang:
+
+1) Multiplication Table
+
+n := 5 // Your number here
+
+for i := 1; i <= 10; i++ {
+        result := i * n
+        Println(result)
+   }
+
+2) Sum of digits
+
+n := 3521 // Your number here
+
+sum := 0 
+for n > 0 {
+    sum += n % 10
+    n /= 10
+}
+Println(sum)
+
+3) Largest digit in a number
+
+n := 2145 // Your number here
+
+maxDigit := 0
+
+for n > 0 {
+   digit := n % 10
+   if digit > maxDigit {
+      maxDigit = digit
+   }
+   n /= 10
+}
+Println(maxDigit)
+
+4) Palindrome check
+
+n := 2121 // Your number here
+
+original := n
+reversed := 0
+
+for n != 0 {
+   remainder := n % 10
+   reversed *= 10
+   reversed += remainder
+   n/= 10
+}
+if original == reversed {
+ Println("Palindrome")
+} else {
+  Println("Not Palindrome")
+}
+
+5) Prime number check
+
+n := 29 // Your number here
+
+result := true
+for i := 2; i < n; i ++ { 
+  if n%i == 0 {
+     result = false
+  }
+}
+Println(result)
+
+6) Reverse number
+
+n := 214 // Your number here
+
+reversed := 0 
+for n != 0 {
+   remainder := n % 10
+   reversed *= 10
+   reversed += remainder
+   n /= 10
+}
+Println(reversed)
+
+7) Greatest Commond Divisor
+
+a := 15 // Your first number here
+b := 25 // Your second number here
+
+min:= 0 
+if a > b {
+  min = b
+} else {
+  min = a
+}
+result := 1
+for i := 1; i <= min; i ++ {
+  if a % i == 0 {
+     if b % i == 0 {
+        result = i
+     }
+  }
+}
+Println(result)
+
+8) Factorial
+
+n := 5 // Your number here
+
+result := 1
+    for i := 2; i <= n; i++ {
+        result *= i
+    }
+Println(result)
+
+9) Sum of first numbers
+
+n := 5 // Your number here
+
+n *= n + 1
+n /= 2
+Println(n)
+
+10) Fibonacci
+
+n:=5 // Your number here
+
+a:=0
+b:=1
+for i := 2; i <= n ; i ++ {
+   c := a + b
+   a =  b
+   b = c
+}
+Println(b)
